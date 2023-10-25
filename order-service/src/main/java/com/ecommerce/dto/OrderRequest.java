@@ -20,7 +20,7 @@ public class OrderRequest {
 
     private String orderNumber;
     private Timestamp orderTime;
-    private Customer customer;
-    private Address address;
-    private List<OrderItem> orderItems;
+    private CustomerDto customerDto;
+    private AddressDto addressDto;
+    private List<OrderItemDto> orderItemsDtos;
 }

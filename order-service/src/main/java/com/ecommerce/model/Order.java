@@ -3,6 +3,7 @@ package com.ecommerce.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,10 +11,11 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "order")
+@Table(name = "order_details")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class Order {
 
     @Id
@@ -21,10 +23,15 @@ public class Order {
     private long id;
     private String orderNumber;
     private Timestamp orderTime;
-    @OneToOne(cascade = CascadeType.PERSIST)
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
-    @OneToOne(cascade = CascadeType.PERSIST)
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "address_id")
     private Address address;
-    @OneToMany(cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 }
