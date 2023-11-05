@@ -1,10 +1,7 @@
 package com.ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,14 +10,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@ToString
 @Builder
 public class Customer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String customerCode;
-    private String fName;
-    private String lName;
+    private String fname;
+    private String lname;
     private String phoneNumber;
     @OneToMany(mappedBy = "customer",cascade = CascadeType.PERSIST)
     private List<Order> order;

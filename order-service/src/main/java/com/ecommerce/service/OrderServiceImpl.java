@@ -8,31 +8,26 @@ import com.ecommerce.model.Order;
 import com.ecommerce.model.OrderItem;
 import com.ecommerce.repository.AddressRepository;
 import com.ecommerce.repository.CustomerRepository;
+import com.ecommerce.repository.OrderItemRepository;
 import com.ecommerce.repository.OrderRepository;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
 
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
 
     @Override
@@ -48,8 +43,8 @@ public class OrderServiceImpl implements OrderService {
             //create customer obj
            customer = Customer.builder()
                     .customerCode(orderRequest.getCustomerDto().getCustomerCode())
-                    .fName(orderRequest.getCustomerDto().getFName())
-                    .lName(orderRequest.getCustomerDto().getLName())
+                    .fname(orderRequest.getCustomerDto().getFname())
+                    .lname(orderRequest.getCustomerDto().getLname())
                     .phoneNumber(orderRequest.getCustomerDto().getPhoneNumber())
                     .build();
 
@@ -67,6 +62,8 @@ public class OrderServiceImpl implements OrderService {
                     .houseNo(orderRequest.getAddressDto().getHouseNo())
                     .street1(orderRequest.getAddressDto().getStreet1())
                     .street2(orderRequest.getAddressDto().getStreet2())
+                    .city(orderRequest.getAddressDto().getCity())
+                    .country(orderRequest.getAddressDto().getCountry())
                     .postalCode(orderRequest.getAddressDto().getPostalCode())
                     .build();
 
@@ -91,6 +88,13 @@ public class OrderServiceImpl implements OrderService {
 
         //save order
         orderRepository.save(order);
+
+        for(OrderItem oi: orderItems){
+            oi.setOrder(order);
+            orderItemRepository.save(oi);
+        }
+
+
         log.info("Order is saved! The id is {} ", order.getId());
     }
 
